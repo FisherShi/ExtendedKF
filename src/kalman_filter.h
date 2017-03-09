@@ -14,7 +14,7 @@ public:
     // state covariance matrix
     MatrixXd P_;
 
-    // state transistion matrix
+    // state transition matrix
     MatrixXd F_;
 
     // process covariance matrix
@@ -44,7 +44,8 @@ public:
      * @param H_in Measurement matrix
      * @param R_in Measurement covariance matrix
      * @param Q_in Process covariance matrix
-     */
+    */
+
     void Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
               MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in);
 
@@ -53,6 +54,7 @@ public:
      * using the process model
      * @param delta_T Time between k and k+1 in s
      */
+
     void Predict();
 
     /**

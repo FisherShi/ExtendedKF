@@ -22,8 +22,6 @@ FusionEKF::FusionEKF() {
     H_laser_ = MatrixXd(2, 4);
     Hj_ = MatrixXd(3, 4);
 
-
-
     /**
     TODO:
       * Finish initializing the FusionEKF.
