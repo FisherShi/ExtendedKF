@@ -69,7 +69,6 @@ public:
      */
     void UpdateEKF(const VectorXd &z);
 
-
 };
 
 #endif /* KALMAN_FILTER_H_ */
