@@ -22,10 +22,27 @@ FusionEKF::FusionEKF() {
     H_laser_ = MatrixXd(2, 4);
     Hj_ = MatrixXd(3, 4);
 
-    /**
-    TODO:
-      * Finish initializing the FusionEKF.
-    */
+    ekf_.x_ = MatrixXd(4,4);
+
+    ekf_.P_ = MatrixXd(4, 4);
+    ekf_.P_ << 1, 0, 0,    0,
+               0, 1, 0,    0,
+               0, 0, 1000, 0,
+               0, 0, 0,    1000;
+
+    ekf_.F_ = MatrixXd(4, 4);
+    ekf_.F_ << 1, 0, 1, 0,
+               0, 1, 0, 1,
+               0, 0, 1, 0,
+               0, 0, 0, 1;
+
+    ekf_.Q_ = MatrixXd(4,4);
+
+    ekf_.H_ = MatrixXd(2, 4);
+    ekf_.H_ << 1, 0, 0, 0,
+               0, 1, 0, 0;
+
+    ekf_.R_ = MatrixXd(4,4);
 }
 
 /**
