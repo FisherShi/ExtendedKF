@@ -22,6 +22,8 @@ FusionEKF::FusionEKF() {
     H_laser_ = MatrixXd(2, 4);
     Hj_ = MatrixXd(3, 4);
 
+    ekf_.x_ = VectorXd(4);
+
     ekf_.P_ = MatrixXd(4, 4);
     ekf_.P_ << 1, 0, 0,    0,
                0, 1, 0,    0,
@@ -34,13 +36,11 @@ FusionEKF::FusionEKF() {
                0, 0, 1, 0,
                0, 0, 0, 1;
 
-    ekf_.Q_ = MatrixXd(4,4);
+    H_laser_ << 1, 0, 0, 0,
+                0, 1, 0, 0;
 
-    ekf_.H_ = MatrixXd(2, 4);
-    ekf_.H_ << 1, 0, 0, 0,
-               0, 1, 0, 0;
+    ekf_.Q_ = MatrixXd(4, 4);
 
-    ekf_.R_ = MatrixXd(4,4);
 }
 
 /**
@@ -61,12 +61,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         */
         // first measurement
         cout << "EKF: " << endl;
-        ekf_.x_ = VectorXd(4);
         ekf_.x_ << 1, 1, 1, 1;
 
         if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-            double rho = measurement_pack.raw_measurements_[0]
-            double phi = measurement_pack.raw_measurements_[1]
+            float rho = measurement_pack.raw_measurements_[0];
+            float phi = measurement_pack.raw_measurements_[1];
             ekf_.x_ << cos(phi)*rho, sin(phi)*rho, 0, 0;
             previous_timestamp_ = measurement_pack.timestamp_;
         }
@@ -90,7 +89,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         - Time is measured in seconds.
        * Update the process noise covariance matrix.
      */
-
+    long dt = measurement_pack.timestamp_-previous_timestamp_;
     ekf_.Predict();
 
     /*****************************************************************************
@@ -105,8 +104,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
         // Radar updates
+        ekf_.Update(measurement_pack.raw_measurements_.segment(0,1));
     } else {
         // Laser updates
+        ekf_.UpdateEKF(measurement_pack.raw_measurements_.segment(0,2));
     }
 
     // print the output

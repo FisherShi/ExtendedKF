@@ -9,7 +9,7 @@ class KalmanFilter {
 public:
 
     // state vector
-    double x_;
+    VectorXd x_;
 
     // state covariance matrix
     MatrixXd P_;
