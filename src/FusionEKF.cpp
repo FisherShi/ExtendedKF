@@ -91,6 +91,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      */
     long dt = measurement_pack.timestamp_-previous_timestamp_;
     ekf_.Predict();
+    cout << "predicted" << endl;
 
     /*****************************************************************************
      *  Update
@@ -104,10 +105,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
         // Radar updates
-        ekf_.Update(measurement_pack.raw_measurements_.segment(0,1));
+        ekf_.Update(measurement_pack.raw_measurements_.segment(0,3));
+        cout << "updated radar" << endl;
     } else {
         // Laser updates
         ekf_.UpdateEKF(measurement_pack.raw_measurements_.segment(0,2));
+        cout << "updated lidar" << endl;
     }
 
     // print the output
