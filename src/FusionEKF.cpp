@@ -82,7 +82,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             float rho = measurement_pack.raw_measurements_[0];
             float phi = measurement_pack.raw_measurements_[1];
             ekf_.x_ << cos(phi)*rho, sin(phi)*rho, 1, 1;
-            ekf_.Init(ekf_.x_,ekf_.P_,ekf_.F_,Hj_,R_radar_,ekf_.Q_);
             cout << "initial x radar:" << endl;
             cout << ekf_.x_ << endl;
 
@@ -91,7 +90,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             previous_timestamp_ = measurement_pack.timestamp_;
 
             ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 1, 1;
-            ekf_.Init(ekf_.x_,ekf_.P_,ekf_.F_,H_laser_,R_laser_,ekf_.Q_);
             cout << "initial x laser:" << endl;
             cout << ekf_.x_ << endl;
         }
@@ -132,16 +130,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
         // Radar updates
-        cout << "start radar update" << endl;
         ekf_.H_ = Hj_;
+        ekf_.R_ = R_radar_;
         cout << "radar raw measurements" << endl;
         cout << measurement_pack.raw_measurements_ << endl;
         ekf_.UpdateEKF(measurement_pack.raw_measurements_);
         cout << "radar updated " << endl;
     } else {
         // Laser updates
-        cout << "start lidar update" << endl;
         ekf_.H_ = H_laser_;
+        ekf_.R_ = R_laser_;
         cout << "lidar raw measurements" << endl;
         cout << measurement_pack.raw_measurements_ << endl;
         ekf_.Update(measurement_pack.raw_measurements_);
