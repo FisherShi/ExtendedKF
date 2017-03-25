@@ -26,10 +26,6 @@ FusionEKF::FusionEKF() {
                0, 0, 0,    1000;
 
     ekf_.F_ = MatrixXd(4, 4);
-    ekf_.F_ << 1, 0, 1, 0,
-               0, 1, 0, 1,
-               0, 0, 1, 0,
-               0, 0, 0, 1;
 
     H_laser_ = MatrixXd(2, 4);
     H_laser_ << 1, 0, 0, 0,
@@ -41,12 +37,12 @@ FusionEKF::FusionEKF() {
            1, 1, 1, 1;
 
     R_laser_ = MatrixXd(2, 2);
-    R_laser_ << 1, 1,
-                1, 1;
+    R_laser_ << 1, 0,
+                0, 1;
     R_radar_ = MatrixXd(3, 3);
-    R_radar_ << 1, 1, 1,
-                1, 1, 1,
-                1, 1, 1;
+    R_radar_ << 1, 0, 0,
+                0, 1, 0,
+                0, 0, 1;
 
     ekf_.Q_ = MatrixXd(4, 4);
     ekf_.Q_ << 1, 1, 1, 1,
@@ -74,13 +70,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         */
         // first measurement
         cout << "EKF: " << endl;
-        ekf_.x_ << 1, 1, 1, 1;
 
         if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
             previous_timestamp_ = measurement_pack.timestamp_;
 
-            float rho = measurement_pack.raw_measurements_[0];
-            float phi = measurement_pack.raw_measurements_[1];
+            double rho = measurement_pack.raw_measurements_[0];
+            double phi = measurement_pack.raw_measurements_[1];
             ekf_.x_ << cos(phi)*rho, sin(phi)*rho, 1, 1;
             cout << "initial x radar:" << endl;
             cout << ekf_.x_ << endl;
@@ -96,6 +91,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
         // done initializing, no need to predict or update
         is_initialized_ = true;
+        cout << "-----------------------------" << endl;
         return;
     }
 
@@ -151,5 +147,5 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << ekf_.x_ << endl;
     cout << "P_: " << endl;
     cout << ekf_.P_ << endl;
-    cout << "cycle done" << endl;
+    cout << "----------------------------------------------" << endl;
 }
