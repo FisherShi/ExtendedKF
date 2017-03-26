@@ -69,6 +69,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
             double rho = measurement_pack.raw_measurements_[0];
             double phi = measurement_pack.raw_measurements_[1];
+
             ekf_.x_ << cos(phi)*rho, sin(phi)*rho, 0, 0;
             cout << "initial x (1st radar measurement):" << endl;
             cout << ekf_.x_ << endl;
@@ -114,8 +115,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     float dt_3 = dt_2 * dt;
     float dt_4 = dt_3 * dt;
 
-    int noise_ax = 5;
-    int noise_ay = 5;
+    int noise_ax = 9;
+    int noise_ay = 9;
 
     ekf_.Q_ <<  dt_4/4*noise_ax,    0,               dt_3/2*noise_ax, 0,
                 0,                  dt_4/4*noise_ay, 0,               dt_3/2*noise_ay,
