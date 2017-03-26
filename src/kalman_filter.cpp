@@ -1,6 +1,4 @@
 #include "kalman_filter.h"
-#include "tools.h"
-#include "iostream"
 
 KalmanFilter::KalmanFilter() {}
 
@@ -41,9 +39,14 @@ void KalmanFilter::Update(const VectorXd &z) {
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
     //update the state by using Extended Kalman Filter equations
-    Tools tools;
-    MatrixXd Hj_ = tools.CalculateJacobian(x_);
-    VectorXd z_pred = Hj_ * x_;
+
+    double rho_pred = sqrt(x_[0]*x_[0] + x_[1]*x_[1]);
+    double phi_pred = atan((x_[1]/x_[0]));
+    double a = x_[0]*x_[2] + x_[1]*x_[3];
+    double rhodot_pred = a/rho_pred;
+
+    VectorXd z_pred = VectorXd(3);
+    z_pred << rho_pred, phi_pred, rhodot_pred;
     VectorXd y = z - z_pred;
     MatrixXd Ht = Hj_.transpose();
     MatrixXd S = Hj_ * P_ * Ht + R_;
