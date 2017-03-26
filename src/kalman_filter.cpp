@@ -41,7 +41,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     //update the state by using Extended Kalman Filter equations
 
     double rho_pred = sqrt(x_[0]*x_[0] + x_[1]*x_[1]);
-    double phi_pred = atan((x_[1]/x_[0]));
+    double phi_pred = atan2(x_[1],x_[0]);
     double a = x_[0]*x_[2] + x_[1]*x_[3];
     double rhodot_pred = a/rho_pred;
 

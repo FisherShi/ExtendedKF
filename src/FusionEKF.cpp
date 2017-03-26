@@ -32,9 +32,6 @@ FusionEKF::FusionEKF() {
                 0, 1, 0, 0;
 
     Hj_ = MatrixXd(3, 4);
-    Hj_ << 1, 1, 1, 1,
-           1, 1, 1, 1,
-           1, 1, 1, 1;
 
     R_laser_ = MatrixXd(2, 2);
     R_laser_ << 1, 0,
