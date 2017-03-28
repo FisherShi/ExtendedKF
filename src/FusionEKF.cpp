@@ -107,26 +107,29 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << "delta t: " << dt << endl;
     previous_timestamp_ = measurement_pack.timestamp_;
 
-    // update F matrix based on dt
-    ekf_.F_ << 1, 0, dt, 0,
-               0, 1, 0,  dt,
-               0, 0, 1,  0,
-               0, 0, 0,  1;
+    if (dt > 0.001){
+        // update F matrix based on dt
+        ekf_.F_ << 1, 0, dt, 0,
+                0, 1, 0,  dt,
+                0, 0, 1,  0,
+                0, 0, 0,  1;
 
-    // update Q matrix based on dt
-    double dt_2 = dt * dt;
-    double dt_3 = dt_2 * dt;
-    double dt_4 = dt_3 * dt;
+        // update Q matrix based on dt
+        double dt_2 = dt * dt;
+        double dt_3 = dt_2 * dt;
+        double dt_4 = dt_3 * dt;
 
-    int noise_ax = 9;
-    int noise_ay = 9;
+        int noise_ax = 9;
+        int noise_ay = 9;
 
-    ekf_.Q_ <<  dt_4/4*noise_ax,    0,               dt_3/2*noise_ax, 0,
+        ekf_.Q_ <<  dt_4/4*noise_ax,    0,               dt_3/2*noise_ax, 0,
                 0,                  dt_4/4*noise_ay, 0,               dt_3/2*noise_ay,
                 dt_3/2*noise_ax,    0,               dt_2*noise_ax,   0,
                 0,                  dt_3/2*noise_ay, 0,               dt_2*noise_ay;
 
-    ekf_.Predict();
+        ekf_.Predict();
+    }
+
     cout << "predicted x:" << endl;
     cout << ekf_.x_ << endl;
 
