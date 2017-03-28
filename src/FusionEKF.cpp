@@ -62,7 +62,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
           * Remember: you'll need to convert radar from polar to cartesian coordinates.
         */
         // first measurement
-        ekf_.x_ << 0, 0, 0, 0;
+        ekf_.x_ << 0,0,0,0;
         cout << "searching for non-zero measurement... " << endl;
 
         if ((measurement_pack.sensor_type_ == MeasurementPackage::RADAR) &&
@@ -72,7 +72,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             double rho = measurement_pack.raw_measurements_[0];
             double phi = measurement_pack.raw_measurements_[1];
 
-            ekf_.x_ << cos(phi) * rho, sin(phi) * rho, 0, 0;
+            ekf_.x_ << cos(phi) * rho, sin(phi) * rho, 1, 1;
             cout << "initial x (1st non-zero radar measurement):" << endl;
             cout << ekf_.x_ << endl;
             is_initialized_ = true;
@@ -83,7 +83,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             previous_timestamp_ = measurement_pack.timestamp_;
             cout << "initial time: " << previous_timestamp_ << endl;
 
-            ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+            ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 1, 1;
             cout << "initial x (1st non-zero laser measurement):" << endl;
             cout << ekf_.x_ << endl;
             is_initialized_ = true;
